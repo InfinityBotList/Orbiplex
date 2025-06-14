@@ -1,25 +1,18 @@
-"use client";
+'use client'
 
-import React, { useEffect } from "react";
-import { motion } from "framer-motion";
-import { AnimatedCard } from "@byteui/components/cards/animated";
-import { featuredBots } from "@byteutils/mocks/bots/featured";
-import { SectionDivider } from "@byteui/components/sections/dividier";
-import { BotCard } from "@byteui/components/cards/bots";
-import { cn } from "@byteutils/functions/cn";
+import React from 'react'
+import { featuredBots } from '@byteutils/mocks/bots/featured'
+import { SectionDivider } from '@byteui/components/sections/dividier'
+import { BotCard } from '@byteui/components/cards/bots'
+import { cn } from '@byteutils/functions/cn'
 
 interface FeaturedBotsSectionProps {
-    className?: string;
+    className?: string
 }
 
 export function FeaturedBotsSection({ className }: FeaturedBotsSectionProps) {
-
-
     return (
-        <section className={cn(
-            "py-28 px-4",
-            className
-        )}>
+        <section className={cn(className)}>
             <div className="container max-w-screen-xl mx-auto">
                 <SectionDivider
                     title="Featured Bots"
@@ -30,7 +23,7 @@ export function FeaturedBotsSection({ className }: FeaturedBotsSectionProps) {
                 />
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
-                    {featuredBots.map((bot) => (
+                    {featuredBots.map(bot => (
                         <BotCard
                             key={bot.id}
                             id={bot.id}
@@ -51,5 +44,5 @@ export function FeaturedBotsSection({ className }: FeaturedBotsSectionProps) {
                 </div>
             </div>
         </section>
-    );
+    )
 }
