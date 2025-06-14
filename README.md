@@ -12,6 +12,7 @@
 [Website](https://infinitybots.gg) • [Documentation](https://docs.infinitybots.gg) • [Status](https://status.botlist.site)
 
 > [!CAUTION]
+>
 > This website is currently under active development. Features may be incomplete, unstable, or subject to change.
 >
 > - The project is open-source at this point for transparency
