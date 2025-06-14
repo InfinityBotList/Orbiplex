@@ -59,12 +59,12 @@ Orbiplex offers a comprehensive suite of features for platform owners and develo
 
 | Feature   | Discord | Revolt | Guilded |
 | --------- | ------- | ------ | ------- |
-| Bots      | ✅      | 🔜     | 🔜      |
-| Servers   | ✅      | 🔜     | 🔜      |
-| Templates | ✅      | 🔜     | 🔜      |
-| Emojis    | ✅      | 🔜     | 🔜      |
-| Analytics | ✅      | 🔜     | 🔜      |
-| Widgets   | ✅      | 🔜     | 🔜      |
+| Bots      | 🔜      | 🔜     | 🔜      |
+| Servers   | 🔜      | 🔜     | 🔜      |
+| Templates | 🔜      | 🔜     | 🔜      |
+| Emojis    | 🔜      | 🔜     | 🔜      |
+| Analytics | 🔜      | 🔜     | 🔜      |
+| Widgets   | 🔜      | 🔜     | 🔜      |
 
 _Legend: ✅ Supported • 🔄 In Progress • 🔜 Planned_
 
