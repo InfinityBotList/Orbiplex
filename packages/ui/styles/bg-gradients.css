@@ -1,0 +1,8 @@
+/* Background gradients for the app */
+body {
+  background-image: 
+    radial-gradient(ellipse at top right, rgba(var(--primary-rgb), 0.07), transparent 50%),
+    radial-gradient(ellipse at bottom left, rgba(var(--accent-rgb), 0.07), transparent 50%),
+    linear-gradient(to bottom, transparent, rgba(var(--background-rgb), 1));
+  background-attachment: fixed;
+}
