@@ -51,8 +51,8 @@ Orbiplex offers a comprehensive suite of features for platform owners and develo
 ## 💻 Technology Stack
 
 - **Frontend**: Next.js 15, React, TypeScript, TailwindCSS
-- **Backend**: Node.js, Prisma, PostgreSQL
-- **Real-time**: WebSocket, Server-Sent Events
+- **Backend**: PostgreSQL, [Popplio](https://github.com/InfinityBotList/Popplio)
+- **Real-time**: WebSocket, Server Sent Events
 - **Authentication**: OAuth2 Multi-Platform Support
 
 ## 📊 Platform Support Matrix
