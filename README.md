@@ -19,7 +19,7 @@
 > - The project is open-source at this point for transparency
 > - Base UI/UX implementation in progress
 > - Discord integration is being prioritized
-> - API endpoints are being established
+> - API client implementation is in progress
 > - Documentation is being written
 >
 > Follow our [Discord](https://discord.gg/ae6wpKqApt) for development updates.
