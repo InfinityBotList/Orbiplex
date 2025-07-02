@@ -1,14 +1,19 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { TestimonialsGrid } from '@byteui/components/testimonials'
-import { cn } from '@byteutils/functions/cn'
+import { TestimonialsGrid } from '@/packages/ui/components/testimonials/index'
+import { useTestimonials } from '@/packages/utils/hooks/use-testimonials'
+import { cn } from '@/packages/utils/functions/cn'
 
-interface TestimonailSectionProps {
+interface TestimonialsSectionProps {
     className?: string
 }
 
-export function TestimonialsSection({ className }: TestimonailSectionProps) {
+function TestimonialsSection({ className }: TestimonialsSectionProps) {
+    const { data: testimonials = [], isLoading, error } = useTestimonials(6)
+
+    console.log(testimonials)
+
     return (
         <section className={cn(className)}>
             <div className="container max-w-screen-xl mx-auto">
@@ -20,34 +25,22 @@ export function TestimonialsSection({ className }: TestimonailSectionProps) {
                 >
                     <h2 className="text-3xl md:text-5xl font-bold mb-4">What Our Users Say</h2>
                     <p className="text-muted-foreground max-w-2xl mx-auto">
-                        Discover why thousands of Discord communities and bot developers choose Infinity List
+                        Real reviews from our Google Business page - discover why thousands choose Infinity List
                     </p>
                 </motion.div>
 
-                <TestimonialsGrid
-                    className="mt-12"
-                    testimonials={[
-                        {
-                            quote: 'Infinity List helped me find the perfect music bot for my server. The detailed reviews and features list made it easy to choose.',
-                            author: 'Indie ',
-                            role: 'Server Owner',
-                            avatar: '/logo.png'
-                        },
-                        {
-                            quote: "As a bot developer, I've seen a significant increase in users since listing on Infinity List. The platform is a game-changer!",
-                            author: 'Indie',
-                            role: 'Bot Developer',
-                            avatar: '/logo.png'
-                        },
-                        {
-                            quote: "The categories and filtering options make it so easy to find exactly what you're looking for. Best Discord resource out there!",
-                            author: 'Indie',
-                            role: 'Discord Moderator',
-                            avatar: '/logo.png'
-                        }
-                    ]}
-                />
+                {error && (
+                    <div className="text-center mb-8">
+                        <p className="text-yellow-600 dark:text-yellow-400">
+                            Unable to load latest reviews. Showing featured testimonials.
+                        </p>
+                    </div>
+                )}
+
+                <TestimonialsGrid className="mt-12" testimonials={testimonials} isLoading={isLoading} />
             </div>
         </section>
     )
 }
+
+export { TestimonialsSection }

@@ -6,8 +6,9 @@ import { BotSearchBar } from '@byteui/layouts/main/search'
 import { cn } from '@byteutils/functions/cn'
 
 import { motion, useScroll, useTransform, useSpring } from 'framer-motion'
-
-import { Bot, Server, Sparkles } from 'lucide-react'
+import { useApiQuery } from '@byteutils/tanstack/react-query-client'
+import { ListStatistics } from '@byteutils/types/list'
+import { Bot, Server, Sparkles, User } from 'lucide-react'
 
 interface HeroSectionProps {
     className?: string
@@ -24,6 +25,10 @@ export function HeroSection({ className }: HeroSectionProps) {
     const springScale = useSpring(scale, springConfig)
 
     const [gradientPosition, setGradientPosition] = React.useState({ x: 0.5, y: 0.5 })
+
+    const { data: stats } = useApiQuery<ListStatistics>(['stats-data'], '/list/stats', {
+        fetchOptions: { external: true }
+    })
 
     useEffect(() => {
         const handleMouseMove = (e: MouseEvent) => {
@@ -109,14 +114,14 @@ export function HeroSection({ className }: HeroSectionProps) {
                     >
                         <span>Discover the </span>
                         <AnimatedTextCycle
-                            words={['best Bots.', 'best Servers.', 'best Templates.', 'best Stickers.', 'and more.']}
+                            words={['Best Bots.', 'Best Servers.']}
                             className="bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent"
                             interval={4000}
                         />
                     </motion.h1>
 
                     <motion.p
-                        className="mt-6 text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto"
+                        className="mt-6 text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-8"
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5, delay: 0.1 }}
@@ -136,15 +141,15 @@ export function HeroSection({ className }: HeroSectionProps) {
                         <div className="flex items-center gap-8 text-muted-foreground">
                             <div className="flex items-center gap-2">
                                 <Bot className="w-5 h-5" />
-                                <span>2,000+ Bots</span>
+                                <span>{stats?.total_bots?.toLocaleString() || '2,000+'} Bots</span>
                             </div>
                             <div className="flex items-center gap-2">
-                                <Server className="w-5 h-5" />
-                                <span>5,000+ Servers</span>
+                                <User className="w-5 h-5" />
+                                <span>{stats?.total_users?.toLocaleString() || '5,000+'} Users</span>
                             </div>
                             <div className="flex items-center gap-2">
                                 <Sparkles className="w-5 h-5" />
-                                <span>Active Community</span>
+                                <span>{stats?.total_votes?.toLocaleString() || 'Many'} Votes</span>
                             </div>
                         </div>
                     </motion.div>

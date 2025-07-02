@@ -12,9 +12,11 @@ export default function ModernHeader() {
     const [isMenuOpen, setIsMenuOpen] = useState(false)
     const [isScrolled, setIsScrolled] = useState(false)
     const [activeDropdown, setActiveDropdown] = useState<string | null>(null)
+    const [mounted, setMounted] = useState(false)
 
     // Track scroll for header transparency
     useEffect(() => {
+        setMounted(true)
         const handleScroll = () => {
             setIsScrolled(window.scrollY > 10)
         }
@@ -76,9 +78,9 @@ export default function ModernHeader() {
         >
             <div className="container mx-auto px-4 md:px-6">
                 <div className="flex h-16 items-center justify-between">
-                    {/* Logo - Fixed nested Links */}
+                    {/* Logo - Fix window usage */}
                     <div className="flex items-center gap-2">
-                        <AnimatedLogo size="md" withText={!isScrolled || window.innerWidth >= 640} />
+                        <AnimatedLogo size="md" withText={mounted ? !isScrolled || window.innerWidth >= 640 : true} />
                     </div>
 
                     {/* Desktop Navigation */}

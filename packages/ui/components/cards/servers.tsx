@@ -11,7 +11,7 @@ interface ServerCardProps {
     id: string
     name: string
     description: string
-    icon: string
+    icon: any
     banner?: string
     verified?: boolean
     members?: number
@@ -48,35 +48,87 @@ export function ServerCard({
     const hasVanityUrl = guildFeatures.includes('VANITY_URL')
     const hasActivities = guildFeatures.includes('ACTIVITIES')
 
+    // Check if server is special (featured, community, or high member count)
+    const isSpecialServer = isFeatured || hasBoost || members > 10000
+
+    const avatar = icon.exists
+        ? `https://cdn.infinitybots.gg/${icon.path}`
+        : 'https://cdn.infinitybots.gg/avatars/default.webp'
+
+    const header = banner.exists
+        ? `https://cdn.infinitybots.gg/${banner.path}`
+        : 'https://cdn.infinitybots.gg/banners/default.webp'
+
     return (
         <motion.div
             whileHover={{ y: -5 }}
             transition={{ type: 'spring', stiffness: 300 }}
             className={cn(
                 'relative group overflow-hidden rounded-xl border border-border/50 bg-card/80 backdrop-blur-md shadow-lg hover:shadow-xl transition-all duration-300',
+                isSpecialServer && 'border-accent shadow-accent hover:shadow-accent',
+                isFeatured && 'ring-2 ring-primary/50',
                 className
             )}
         >
-            {/* Glassy background gradient */}
-            <div className="absolute inset-0 z-0 bg-gradient-to-br from-primary/10 via-accent/10 to-secondary/20 opacity-80 pointer-events-none" />
+            {/* Special server animated border gradient */}
+            {isSpecialServer && (
+                <div
+                    className="absolute inset-0 rounded-xl bg-gradient-to-r from-accent via-primary to-accent/20 opacity-30 pointer-events-none animate-pulse"
+                    style={{ animationDuration: '4s' }}
+                />
+            )}
+
+            {/* Enhanced glassy background gradient for special servers */}
+            <div
+                className={cn(
+                    'absolute inset-0 z-0 opacity-80 pointer-events-none',
+                    isSpecialServer
+                        ? 'bg-gradient-to-br from-accent/15 via-primary/10 to-accent/15'
+                        : 'bg-gradient-to-br from-primary/10 via-accent/10 to-secondary/20'
+                )}
+            />
 
             <Link href={`/servers/${id}`} className="block relative z-10">
                 {/* Banner */}
                 <div className={cn('relative overflow-hidden', isCompact ? 'h-24' : 'h-32')}>
-                    {banner ? (
-                        <Image src={banner} alt={`${name} banner`} fill className="object-cover" />
+                    {header ? (
+                        <Image src={header} alt={`${name} banner`} fill className="object-cover" />
                     ) : (
                         <div className="absolute inset-0 bg-gradient-to-r from-primary/30 to-accent/30" />
                     )}
                     <div className="absolute inset-0 bg-gradient-to-t from-card to-transparent" />
+
+                    {/* Server badges */}
+                    {isFeatured ? (
+                        <div
+                            className="absolute top-3 right-3 px-2 py-1 bg-accent backdrop-blur-sm text-primary-foreground rounded-full text-xs font-medium flex items-center animate-pulse"
+                            style={{ animationDuration: '3s' }}
+                        >
+                            <Star className="w-3 h-3 mr-1" />
+                            Featured
+                        </div>
+                    ) : hasBoost ? (
+                        <div className="absolute top-3 right-3 px-2 py-1 bg-gradient-to-r from-accent to-primary backdrop-blur-sm text-primary-foreground rounded-full text-xs font-medium flex items-center">
+                            <Shield className="w-3 h-3 mr-1" />
+                            Community
+                        </div>
+                    ) : members > 50000 ? (
+                        <div className="absolute top-3 right-3 px-2 py-1 bg-gradient-to-r from-yellow-500 to-amber-500 backdrop-blur-sm text-white rounded-full text-xs font-medium flex items-center">
+                            <Users className="w-3 h-3 mr-1" />
+                            Popular
+                        </div>
+                    ) : null}
                 </div>
+
+                {/* Background gradient for hover effect */}
+                <div className="absolute inset-0 bg-gradient-to-tr from-primary/5 via-transparent to-accent/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
                 {/* Card content */}
                 <div className="p-5">
                     <div className="flex items-start gap-4">
                         {/* Server icon */}
                         <div className="relative h-16 w-16 rounded-full overflow-hidden bg-muted flex-shrink-0 border-4 border-card mt-[-2rem]">
-                            <Image src={icon} alt={name} fill className="object-cover" />
+                            <Image src={avatar} alt={name} fill className="object-cover" />
                         </div>
 
                         {/* Server info */}

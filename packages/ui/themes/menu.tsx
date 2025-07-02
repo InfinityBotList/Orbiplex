@@ -35,13 +35,28 @@ export function ThemeMenu({ className }: { className?: string }) {
     const [isOpen, setIsOpen] = React.useState(false)
     const { theme, setTheme, resolvedTheme } = useTheme()
     const { colorScheme, setColorScheme } = useColorScheme()
+    const [mounted, setMounted] = React.useState(false)
+
+    // Prevent hydration mismatch
+    React.useEffect(() => {
+        setMounted(true)
+    }, [])
 
     return (
         <div className={cn('relative', className)}>
-            <button onClick={() => setIsOpen(!isOpen)} className="p-2 rounded-lg hover:bg-muted/50 transition-colors">
-                {resolvedTheme === 'dark' ? (
-                    <Moon size={20} className="text-primary" />
+            <button
+                onClick={() => setIsOpen(!isOpen)}
+                className="p-2 rounded-lg hover:bg-muted/50 transition-colors"
+                suppressHydrationWarning
+            >
+                {mounted ? (
+                    resolvedTheme === 'dark' ? (
+                        <Moon size={20} className="text-primary" />
+                    ) : (
+                        <Sun size={20} className="text-primary" />
+                    )
                 ) : (
+                    // Fallback icon for SSR
                     <Sun size={20} className="text-primary" />
                 )}
             </button>

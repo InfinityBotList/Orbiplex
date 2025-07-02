@@ -10,9 +10,7 @@ export default function Footer() {
             <div className="container max-w-screen-2xl py-10 md:py-16">
                 <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
                     <div className="flex flex-col gap-4">
-                        <Link href="/" className="flex items-center gap-2">
-                            <AnimatedLogo size="md" />
-                        </Link>
+                        <AnimatedLogo size="md" />
                         <p className="text-muted-foreground max-w-xs">
                             Discover the best Discord bots and servers to enhance your Discord experience. Your one-stop
                             destination for everything Discord.

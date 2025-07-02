@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion'
 import { BotStatsDashboard } from '@byteui/components/bots/stats-dash'
+import { useApiQuery } from '@byteutils/tanstack/react-query-client'
 import { cn } from '@byteutils/functions/cn'
 
 interface StatsSectionProps {
@@ -9,6 +10,10 @@ interface StatsSectionProps {
 }
 
 export function StatsSection({ className }: StatsSectionProps) {
+    const { data: stats } = useApiQuery<ListStatistics>(['stats-data'], '/list/stats', {
+        fetchOptions: { external: true }
+    })
+
     return (
         <section className={cn(className)}>
             <div className="container max-w-screen-xl mx-auto text-center">
@@ -27,11 +32,11 @@ export function StatsSection({ className }: StatsSectionProps) {
                 </motion.div>
 
                 <BotStatsDashboard
-                    votes={384756}
-                    stars={4.7}
-                    servers={12467}
-                    users={2500000}
-                    reviews={8934}
+                    bots={stats?.total_bots}
+                    approved_bots={stats?.total_approved_bots}
+                    bot_packs={stats?.total_packs}
+                    users={stats?.total_users}
+                    votes={stats?.total_votes}
                     uptime={99.8}
                 />
             </div>

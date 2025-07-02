@@ -11,16 +11,21 @@ export default {
         extend: {
             colors: {
                 'background': 'var(--background)',
+                'background-rgb': 'rgb(var(--background-rgb))',
                 'foreground': 'var(--foreground)',
+                'foreground-rgb': 'rgb(var(--foreground-rgb))',
                 'primary': 'var(--primary)',
+                'primary-rgb': 'rgb(var(--primary-rgb))',
                 'primary-foreground': 'var(--primary-foreground)',
                 'secondary': 'var(--secondary)',
                 'secondary-foreground': 'var(--secondary-foreground)',
                 'accent': 'var(--accent)',
+                'accent-rgb': 'rgb(var(--accent-rgb))',
                 'accent-foreground': 'var(--accent-foreground)',
                 'muted': 'var(--muted)',
                 'muted-foreground': 'var(--muted-foreground)',
                 'card': 'var(--card)',
+                'card-rgb': 'rgb(var(--card-rgb))',
                 'card-foreground': 'var(--card-foreground)',
                 'border': 'var(--border)',
                 'input': 'var(--input)'
@@ -32,7 +37,8 @@ export default {
             },
             animation: {
                 'blob-slow': 'blob 20s infinite ease-in-out',
-                'wave': 'wave 6s ease-in-out infinite'
+                'wave': 'wave 6s ease-in-out infinite',
+                'drawer': 'drawer 0.3s ease-in-out'
             },
             keyframes: {
                 blob: {
@@ -43,6 +49,10 @@ export default {
                     '0%': { transform: 'translateX(0)' },
                     '50%': { transform: 'translateX(-2%)' },
                     '100%': { transform: 'translateX(0)' }
+                },
+                drawer: {
+                    '0%': { transform: 'translateY(100%)' },
+                    '100%': { transform: 'translateY(0)' }
                 }
             }
         }
