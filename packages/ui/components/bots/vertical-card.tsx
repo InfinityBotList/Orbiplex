@@ -71,7 +71,7 @@ export function VerticalBotCard({
                     )}
 
                     {/* Bot avatar overlaying the banner */}
-                    <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2">
+                    <div className="absolute left-1/2 transform -translate-x-1/2 translate-y-1/2">
                         <div className="relative h-20 w-20 rounded-full overflow-hidden bg-muted flex-shrink-0 border-4 border-card">
                             <Image src={avatar} alt={name} fill className="object-cover 0" />
                         </div>
