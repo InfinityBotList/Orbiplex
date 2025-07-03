@@ -2,7 +2,7 @@ import React from 'react'
 import Link from 'next/link'
 import { AnimatedLogo } from '../logos/animated'
 import { GradientButton } from '../buttons/gradient'
-import { FaDiscord, FaGit, FaTwitter } from 'react-icons/fa'
+import { FaDiscord, FaGithub, FaTwitter } from 'react-icons/fa'
 
 export default function Footer() {
     return (
@@ -41,7 +41,7 @@ export default function Footer() {
                                 className="text-muted-foreground hover:text-foreground transition-colors"
                                 aria-label="Visit our GitHub"
                             >
-                                <FaGit className="w-6 h-6" />
+                                <FaGithub className="w-6 h-6" />
                             </a>
                         </div>
                     </div>{' '}
