@@ -92,7 +92,7 @@ function ThemePreview({ theme, active, onClick }: { theme: any; active: boolean;
         <button
             onClick={onClick}
             className={cn(
-                'relative group w-full p-3 rounded-xl border-2 transition-all duration-200 overflow-hidden',
+                'relative group w-full p-3 rounded-xl border-2 transition-all duration-200 overflow-hidden py-4 px-4',
                 active ? 'border-primary bg-card shadow-lg' : 'bg-card border-border hover:border-primary/50'
             )}
         >
@@ -117,7 +117,7 @@ function ColorSwatch({ scheme, active, onClick }: { scheme: any; active: boolean
         <button
             onClick={onClick}
             className={cn(
-                'relative group w-full p-3 rounded-xl border-2 transition-all duration-200 overflow-hidden bg-card',
+                'relative group w-full p-3 rounded-xl border-2 transition-all duration-200 overflow-hidden bg-card py-4 px-4',
                 active ? 'border-primary bg-primary/5 shadow-lg' : 'border-border hover:border-primary/50'
             )}
         >
@@ -237,7 +237,7 @@ export function ThemeMenu({ className }: { className?: string }) {
                             'rounded-none md:rounded-2xl bg-card/95 backdrop-blur-xl border border-border shadow-2xl overflow-hidden'
                         )}
                     >
-                        <div className="flex items-center gap-3 px-6 py-4 border-b border-border bg-card">
+                        <div className="flex items-center gap-3 px-8 py-4 border-b border-border bg-card">
                             <Palette size={22} className="text-primary" />
                             <h3 className="font-semibold text-lg tracking-tight flex-1">Customize Appearance</h3>
                             <button
