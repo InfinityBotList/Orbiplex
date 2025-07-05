@@ -16,13 +16,6 @@ interface HeroSectionProps {
 
 export function HeroSection({ className }: HeroSectionProps) {
     const { scrollY } = useScroll()
-    const y = useTransform(scrollY, [0, 500], [0, 150])
-    const opacity = useTransform(scrollY, [0, 200], [1, 0])
-    const scale = useTransform(scrollY, [0, 100], [1, 0.95])
-
-    const springConfig = { stiffness: 100, damping: 30 }
-    const springY = useSpring(y, springConfig)
-    const springScale = useSpring(scale, springConfig)
 
     const [gradientPosition, setGradientPosition] = React.useState({ x: 0.5, y: 0.5 })
 
@@ -96,15 +89,8 @@ export function HeroSection({ className }: HeroSectionProps) {
                 <div className="absolute inset-0 z-0 opacity-[0.03] bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJhIiB4PSIwIiB5PSIwIj48ZmVUdXJidWxlbmNlIGJhc2VGcmVxdWVuY3k9Ii43NSIgc3RpdGNoVGlsZXM9InN0aXRjaCIgdHlwZT0iZnJhY3RhbE5vaXNlIi8+PGZlQ29sb3JNYXRyaXggdHlwZT0ic2F0dXJhdGUiIHZhbHVlcz0iMCIvPjwvZmlsdGVyPjxwYXRoIGQ9Ik0wIDBoMzAwdjMwMEgweiIgZmlsdGVyPSJ1cmwoI2EpIiBvcGFjaXR5PSIuMDUiLz48L3N2Zz4=')]" />
             </div>
 
-            {/* Content container */}
-            <motion.div
-                style={{
-                    y: springY,
-                    opacity,
-                    scale: springScale
-                }}
-                className="relative z-10 flex flex-col items-center justify-center min-h-[92vh] container mx-auto px-4"
-            >
+            {/* Content container - remove scroll transforms */}
+            <div className="relative z-10 flex flex-col items-center justify-center min-h-[92vh] container mx-auto px-4">
                 <div className="text-center max-w-4xl mx-auto">
                     <motion.h1
                         className="text-4xl md:text-5xl lg:text-6xl font-bold"
@@ -154,10 +140,10 @@ export function HeroSection({ className }: HeroSectionProps) {
                         </div>
                     </motion.div>
                 </div>
-            </motion.div>
+            </div>
 
             {/* Wave separator */}
-            <div className="absolute bottom-0 left-0 w-full z-10 overflow-hidden leading-[0] rotate-180">
+            <div className="relative bottom-0 left-0 w-full z-0 overflow-hidden leading-[0] rotate-180">
                 <svg
                     data-name="Layer 1"
                     xmlns="http://www.w3.org/2000/svg"

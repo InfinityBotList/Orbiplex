@@ -1,4 +1,11 @@
-import { useQuery, UseQueryOptions, QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import {
+    useQuery,
+    UseQueryOptions,
+    QueryClient,
+    QueryClientProvider,
+    useMutation,
+    UseMutationOptions
+} from '@tanstack/react-query'
 
 export const queryClient = new QueryClient({
     defaultOptions: {
@@ -82,6 +89,51 @@ export function useApiQuery<T = unknown, E = unknown>(
         queryKey: key,
         queryFn: () => fetcher<T>(url, options?.fetchOptions),
         ...options
+    })
+}
+
+// Custom hook for mutations
+export function useApiMutation<TData = unknown, TVariables = unknown, TError = unknown>(
+    options: {
+        endpoint: string
+        method?: 'POST' | 'PUT' | 'DELETE' | 'PATCH'
+        fetchOptions?: RequestInit & { external?: boolean; staging?: boolean }
+    } & UseMutationOptions<TData, TError, TVariables>
+) {
+    const { endpoint, method = 'POST', fetchOptions, ...mutationOptions } = options
+
+    return useMutation<TData, TError, TVariables>({
+        mutationFn: async (variables: TVariables) => {
+            const resolvedUrl = resolveApiUrl(endpoint, fetchOptions)
+
+            const requestOptions: RequestInit = {
+                ...fetchOptions,
+                method,
+                headers: {
+                    'Content-Type': 'application/json',
+                    ...(fetchOptions?.headers || {})
+                }
+            }
+
+            // Add body for POST/PUT/PATCH requests
+            if (method !== 'DELETE' && variables) {
+                requestOptions.body = JSON.stringify(variables)
+            }
+
+            // Add credentials for internal API
+            if (!fetchOptions?.external) {
+                requestOptions.credentials = 'include'
+            }
+
+            const res = await fetch(resolvedUrl, requestOptions)
+
+            if (!res.ok) {
+                throw new Error(`API error: ${res.status}`)
+            }
+
+            return res.json()
+        },
+        ...mutationOptions
     })
 }
 

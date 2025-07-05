@@ -36,10 +36,10 @@
 - [x] Popular bots section with randomization
 - [x] Featured bots section
 - [x] NSFW filtering
-- [ ] Advanced search functionality
-- [ ] Category filtering
-- [ ] Tag-based search
-- [ ] Sort by popularity, votes, stars
+- [x] Advanced search functionality
+- [x] Category filtering
+- [x] Tag-based search
+- [x] Sort by popularity, votes, stars
 
 ### Reviews & Ratings
 
