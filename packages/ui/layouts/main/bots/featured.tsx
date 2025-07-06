@@ -64,15 +64,7 @@ export function FeaturedBotsSection({ className }: FeaturedBotsSectionProps) {
                               <div key={`skeleton-${i}`} className="h-80 bg-muted rounded-xl animate-pulse mt-12" />
                           ))
                         : filteredBots.length > 0
-                          ? filteredBots.map(bot => (
-                                <BotCard
-                                    key={bot.bot_id}
-                                    id={bot.bot_id}
-                                    name={bot.user.username}
-                                    featured={true}
-                                    variant="featured"
-                                />
-                            ))
+                          ? filteredBots.map(bot => <BotCard bot={bot} key={bot.bot_id} variant="featured" />)
                           : // Fallback to mock data if no SFW bots available
                             featuredBots
                                 .slice(0, 6)

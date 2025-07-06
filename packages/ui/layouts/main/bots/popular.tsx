@@ -37,22 +37,7 @@ export function PopularBotsSection({ className }: PopularBotsSectionProps) {
                           Array.from({ length: 8 }).map((_, i) => (
                               <div key={`skeleton-${i}`} className="h-64 bg-muted rounded-lg animate-pulse" />
                           ))
-                        : randomizedBots.map(bot => (
-                              <BotCard
-                                  key={bot.user.id}
-                                  id={bot.bot_id}
-                                  name={bot.user.username}
-                                  description={bot.short}
-                                  avatar={bot.user.avatar}
-                                  verified={bot.verified}
-                                  votes={bot.votes}
-                                  stars={bot.stars}
-                                  serverCount={bot.servers}
-                                  tags={bot.tags}
-                                  inviteUrl={bot.inviteUrl}
-                                  variant="default"
-                              />
-                          ))}
+                        : randomizedBots.map(bot => <BotCard bot={bot} key={bot.bot_id} variant="default" />)}
                 </div>
             </div>
         </section>

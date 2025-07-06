@@ -4,26 +4,13 @@ import React, { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import {
-    BadgeCheck,
-    ShieldCheck,
-    ShieldAlert,
-    Heart,
-    Star,
-    Zap,
-    Users,
-    ArrowRight,
-    Eye,
-    Vote,
-    Server
-} from 'lucide-react'
+import { BadgeCheck, ShieldCheck, ShieldAlert, Star, Zap, Users, ArrowRight, Vote, Server } from 'lucide-react'
 import { cn } from '@byteutils/functions/cn'
 import { BotAvatarFallback, BotBannerFallback } from '../fallbacks/bot-fallbacks'
-import { useApiQuery } from '@byteutils/tanstack/react-query-client'
-import { BotReviewsResponse, BotStructure } from '@byteutils/types'
+import { BotStructure } from '@byteutils/types'
 
 interface BotCardProps {
-    bot: any // Accept the full bot object from search results
+    bot: BotStructure
     className?: string
     variant?: 'default' | 'compact' | 'featured'
 }
@@ -32,29 +19,25 @@ export function BotCard({ bot, className, variant = 'default' }: BotCardProps) {
     const [avatarError, setAvatarError] = useState(false)
     const [bannerError, setBannerError] = useState(false)
 
-    // Safely extract bot data with fallbacks
-    const botId = bot?.bot_id || bot?.id
-    const botName = bot?.user?.username || bot?.user?.display_name || bot?.name || 'Unknown Bot'
-    const botDescription = bot?.short || bot?.description || 'No description available'
-    const botAvatar = bot?.user?.avatar
-    const botBanner = bot?.banner
-    const botVerified = bot?.type === 'approved' || bot?.verified || false
-    const botVotes = bot?.votes || 0
-    const botServers = bot?.servers || 0
-    const botUsers = bot?.users || 0
-    const botTags = bot?.tags || []
-    const botFeatured = bot?.featured || variant === 'featured'
-    const botPremium = bot?.premium || false
-    const botNsfw = bot?.nsfw || false
-    const botInvite = bot?.invite
+    const botId = bot.bot_id
+    const botName = bot.user.display_name || bot.user.username || 'Unknown Bot'
+    const botDescription = bot.short
+    const botAvatar = bot.user.avatar
+    const botBanner = bot.banner?.path
+    const botVerified = bot.type === 'approved'
+    const botVotes = bot.votes
+    const botServers = bot.servers
+    const botUsers = bot.users || 0
+    const botTags = bot.tags || []
+    const botFeatured = variant === 'featured'
+    const botPremium = bot.premium
+    const botNsfw = bot.nsfw
+    const botInvite = bot.invite
 
     const isCompact = variant === 'compact'
     const isFeatured = variant === 'featured'
+    const isSpecialBot = botFeatured || botPremium || bot.type === 'certified'
 
-    // Check if bot is special (premium, certified, or featured)
-    const isSpecialBot = botFeatured || botPremium || bot?.type === 'certified'
-
-    // Get status border color
     const getStatusBorderColor = (status?: string) => {
         switch (status) {
             case 'online':
@@ -95,7 +78,11 @@ export function BotCard({ bot, className, variant = 'default' }: BotCardProps) {
                     <div className="relative h-32 w-full overflow-hidden">
                         {botBanner && !bannerError ? (
                             <Image
-                                src={`https://cdn.infinitybots.gg/${botBanner}`}
+                                src={
+                                    botBanner.startsWith('http')
+                                        ? botBanner
+                                        : `https://cdn.infinitybots.gg/${botBanner}`
+                                }
                                 alt={`${botName} banner`}
                                 fill
                                 className="object-cover"
@@ -122,7 +109,7 @@ export function BotCard({ bot, className, variant = 'default' }: BotCardProps) {
                                 <ShieldAlert className="w-3 h-3 mr-1" />
                                 NSFW
                             </div>
-                        ) : bot?.type === 'certified' ? (
+                        ) : bot.type === 'certified' ? (
                             <div className="absolute top-3 right-3 px-2 py-1 bg-gradient-to-r from-accent to-primary backdrop-blur-sm text-primary-foreground rounded-full text-xs font-medium flex items-center">
                                 <BadgeCheck className="w-3 h-3 mr-1" />
                                 Certified
@@ -138,13 +125,17 @@ export function BotCard({ bot, className, variant = 'default' }: BotCardProps) {
                         <div
                             className={cn(
                                 'relative h-16 w-16 rounded-full overflow-hidden bg-muted flex-shrink-0 border-4 transition-all duration-300',
-                                getStatusBorderColor(bot?.user?.status),
+                                getStatusBorderColor(bot.user.status),
                                 (botBanner || isFeatured) && 'mt-[-2rem]'
                             )}
                         >
                             {botAvatar && !avatarError ? (
                                 <Image
-                                    src={botAvatar}
+                                    src={
+                                        botAvatar.startsWith('http')
+                                            ? botAvatar
+                                            : `https://cdn.infinitybots.gg${botAvatar}`
+                                    }
                                     alt={botName}
                                     fill
                                     className="object-cover"
@@ -176,11 +167,11 @@ export function BotCard({ bot, className, variant = 'default' }: BotCardProps) {
                     <div className="flex items-center gap-4 mt-4 text-sm text-muted-foreground">
                         <div className="flex items-center gap-1.5">
                             <Users className="h-4 w-4" />
-                            <span>{botUsers.toLocaleString()} users</span>
+                            <span>{botUsers} users</span>
                         </div>
                         <div className="flex items-center gap-1.5">
                             <Server className="h-4 w-4" />
-                            <span>{botServers.toLocaleString()} servers</span>
+                            <span>{botServers} servers</span>
                         </div>
                     </div>
 
@@ -209,7 +200,7 @@ export function BotCard({ bot, className, variant = 'default' }: BotCardProps) {
                     <div className="flex items-center gap-4">
                         <div className="flex items-center gap-1 text-sm">
                             <Vote className="h-4 w-4 text-red-500" />
-                            <span>{botVotes.toLocaleString()}</span>
+                            <span>{botVotes}</span>
                         </div>
                         <div className="flex items-center gap-1 text-sm">
                             <Star className="h-4 w-4 text-amber-500" />
