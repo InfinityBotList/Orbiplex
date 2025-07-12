@@ -24,14 +24,26 @@ export function HeroSection({ className }: HeroSectionProps) {
     })
 
     useEffect(() => {
+        let animationFrameId: number | null = null
+
         const handleMouseMove = (e: MouseEvent) => {
-            const x = e.clientX / window.innerWidth
-            const y = e.clientY / window.innerHeight
-            setGradientPosition({ x, y })
+            if (animationFrameId !== null) return // already queued
+
+            animationFrameId = requestAnimationFrame(() => {
+                const x = e.clientX / window.innerWidth
+                const y = e.clientY / window.innerHeight
+                setGradientPosition({ x, y })
+                animationFrameId = null
+            })
         }
 
         window.addEventListener('mousemove', handleMouseMove)
-        return () => window.removeEventListener('mousemove', handleMouseMove)
+        return () => {
+            window.removeEventListener('mousemove', handleMouseMove)
+            if (animationFrameId !== null) {
+                cancelAnimationFrame(animationFrameId)
+            }
+        }
     }, [])
 
     return (
