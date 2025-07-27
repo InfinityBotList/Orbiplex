@@ -27,7 +27,7 @@ export async function GET(request: NextRequest) {
                     profilePhotoUrl: review.profile_photo_url || '/logo.png',
                     isAnonymous: false
                 },
-                starRating: this.convertRating(review.rating),
+                starRating: convertRating(review.rating),
                 comment: review.text,
                 createTime: new Date(review.time * 1000).toISOString(),
                 updateTime: new Date(review.time * 1000).toISOString()
@@ -41,10 +41,10 @@ export async function GET(request: NextRequest) {
         }
 
         // Fallback to mock data
-        return this.getMockData(limit)
+        return getMockData(limit) // FIXED
     } catch (error) {
         console.error('Failed to fetch Google Places reviews:', error)
-        return this.getMockData(limit)
+        return getMockData(limit) // FIXED
     }
 }
 
@@ -63,7 +63,6 @@ function getMockData(limit: number) {
             createTime: new Date(Date.now() - 86400000 * 2).toISOString(),
             updateTime: new Date(Date.now() - 86400000 * 2).toISOString()
         }
-        // ...more mock reviews
     ]
 
     return NextResponse.json({

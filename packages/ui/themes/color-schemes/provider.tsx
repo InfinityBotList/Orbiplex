@@ -198,3 +198,15 @@ export const useColorScheme = () => {
     }
     return context
 }
+
+export const colorSchemes: {
+    value: ColorScheme
+    label: string
+    description: string
+    colors: Record<string, string>
+}[] = Object.entries(schemes).map(([key, value]) => ({
+    value: key as ColorScheme,
+    label: key.charAt(0).toUpperCase() + key.slice(1),
+    description: `Use the ${key} color theme`,
+    colors: value.light
+}))
