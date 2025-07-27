@@ -1,9 +1,7 @@
-import { useEffect, useRef } from "react";
+import { useRef, useState, useEffect } from 'react'
+import type { RefObject } from 'react'
 
-import type { RefObject } from "react";
-
-const description =
-  "Adds and cleans up an event listener on a specified target element.";
+const description = 'Adds and cleans up an event listener on a specified target element.'
 
 /**
  * Adds and cleans up an event listener on a specified target element.
@@ -12,35 +10,29 @@ const description =
  * @param handler The event handler function.
  * @param element Optional: The target element to attach the event listener to (defaults to window).
  */
-export function useEventListener<K extends keyof WindowEventMap>(
-  eventName: K,
-  handler: (event: WindowEventMap[K]) => void,
-  element?: RefObject<HTMLElement> | Window,
+export function useEventListener<K extends keyof WindowEventMap & keyof HTMLElementEventMap>(
+    eventName: K,
+    handler: (event: WindowEventMap[K] | HTMLElementEventMap[K]) => void,
+    element?: RefObject<HTMLElement | null> | Window
 ): void {
-  const savedHandler = useRef<(event: WindowEventMap[K]) => void>(handler);
+    const savedHandler = useRef(handler)
 
-  // Update the ref.current value if the handler changes
-  useEffect(() => {
-    savedHandler.current = handler;
-  }, [handler]);
+    // Update the saved handler if it changes
+    useEffect(() => {
+        savedHandler.current = handler
+    }, [handler])
 
-  useEffect(() => {
-    const targetElement: HTMLElement | Window =
-      element && "current" in element && element.current
-        ? element.current
-        : window;
+    useEffect(() => {
+        const targetElement: HTMLElement | Window | null = element && 'current' in element ? element.current : window
 
-    if (!targetElement) return;
+        if (!targetElement) return
 
-    // Type assertion is added here to ensure TypeScript understands the event type correctly
-    const eventListener: EventListener = (event) => {
-      savedHandler.current(event as WindowEventMap[K]);
-    };
+        const eventListener = (event: Event) => savedHandler.current(event as WindowEventMap[K])
 
-    targetElement.addEventListener(eventName, eventListener);
+        targetElement.addEventListener(eventName, eventListener)
 
-    return () => {
-      targetElement.removeEventListener(eventName, eventListener);
-    };
-  }, [eventName, element]);
+        return () => {
+            targetElement.removeEventListener(eventName, eventListener)
+        }
+    }, [eventName, element])
 }
