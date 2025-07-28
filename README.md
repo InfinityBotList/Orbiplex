@@ -31,8 +31,8 @@ Orbiplex offers a comprehensive suite of features for platform owners and develo
 - **Multi-Platform Support**
 
     - Discord Integration
-    - Revolt Integration
-    - Guilded Integration
+        - Revolt Integration
+        - Guilded Integration
 
 - **Resource Types**
 

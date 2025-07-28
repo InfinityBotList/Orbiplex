@@ -39,40 +39,33 @@ export function ColorSchemeSwitcher() {
                             transition={{ duration: 0.15 }}
                             className="absolute top-full right-0 mt-2 p-2 z-50 bg-card border border-border rounded-lg shadow-lg w-64 grid grid-cols-2 gap-2"
                         >
-                            {ColourSchemes.map(
-                                (scheme: {
-                                    value: string
-                                    label: string
-                                    description: string
-                                    colors: Record<string, string>
-                                }) => {
-                                    const isSelected = colorScheme === scheme.value
-                                    return (
-                                        <button
-                                            key={scheme.value}
-                                            onClick={() => {
-                                                setColorScheme(scheme.value as ColourSchemes)
-                                                setIsOpen(false)
-                                            }}
-                                            className={`relative p-3 rounded-lg border transition-all text-left ${
-                                                isSelected
-                                                    ? 'border-primary bg-primary/10'
-                                                    : 'border-border hover:border-primary/30 hover:bg-muted/50'
-                                            }`}
-                                        >
-                                            <div className="flex items-center justify-between mb-2">
-                                                <div
-                                                    className="w-4 h-4 rounded-full border-2 border-background"
-                                                    style={{ backgroundColor: scheme.colors.primary }}
-                                                />
-                                                {isSelected && <Check className="w-4 h-4 text-primary" />}
-                                            </div>
-                                            <div className="text-sm font-medium">{scheme.label}</div>
-                                            <div className="text-xs text-muted-foreground">{scheme.description}</div>
-                                        </button>
-                                    )
-                                }
-                            )}
+                            {ColourSchemes.map(scheme => {
+                                const isSelected = colorScheme === scheme.value
+                                return (
+                                    <button
+                                        key={scheme.value}
+                                        onClick={() => {
+                                            setColorScheme(scheme.value) // FIXED HERE
+                                            setIsOpen(false)
+                                        }}
+                                        className={`relative p-3 rounded-lg border transition-all text-left ${
+                                            isSelected
+                                                ? 'border-primary bg-primary/10'
+                                                : 'border-border hover:border-primary/30 hover:bg-muted/50'
+                                        }`}
+                                    >
+                                        <div className="flex items-center justify-between mb-2">
+                                            <div
+                                                className="w-4 h-4 rounded-full border-2 border-background"
+                                                style={{ backgroundColor: scheme.colors.primary }}
+                                            />
+                                            {isSelected && <Check className="w-4 h-4 text-primary" />}
+                                        </div>
+                                        <div className="text-sm font-medium">{scheme.label}</div>
+                                        <div className="text-xs text-muted-foreground">{scheme.description}</div>
+                                    </button>
+                                )
+                            })}
                         </motion.div>
                     </>
                 )}

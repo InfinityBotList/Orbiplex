@@ -1,7 +1,6 @@
 import React from 'react'
 import Link from 'next/link'
 import { AnimatedLogo } from '../logos/animated'
-import { GradientButton } from '../buttons/gradient'
 import { FaDiscord, FaGithub, FaTwitter } from 'react-icons/fa'
 
 export default function Footer() {

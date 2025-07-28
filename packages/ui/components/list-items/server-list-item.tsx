@@ -90,7 +90,7 @@ export function ServerListItem({ server, className }: ServerListItemProps) {
                             {/* Tags */}
                             {serverTags.length > 0 && (
                                 <div className="flex flex-wrap gap-2 mb-4">
-                                    {serverTags.slice(0, 4).map((tag, index) => (
+                                    {serverTags.slice(0, 4).map((tag: string, index: number) => (
                                         <span
                                             key={index}
                                             className="px-2 py-1 text-xs rounded-lg bg-secondary/20 text-secondary-foreground"

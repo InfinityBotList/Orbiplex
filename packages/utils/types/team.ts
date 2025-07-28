@@ -1,3 +1,5 @@
+export type UserStatus = 'online' | 'offline' | 'dnd' | 'idle'
+
 export interface TeamMember {
     user: {
         id: string
@@ -5,7 +7,7 @@ export interface TeamMember {
         display_name: string
         avatar: string
         bot: boolean
-        status: 'online' | 'offline' | 'dnd' | 'idle'
+        status: UserStatus
         flags: string[]
         extra_data: {
             nickname: string
@@ -22,24 +24,23 @@ export interface TeamMember {
             }
         }
     }
-    positions: Array<{
-        id: string
-        name: string
-        role_id: string
-        perms: string[]
-        created_at: string
-        index: number
-        corresponding_roles: Array<{
-            name: string
-            value: string
-        }>
-        icon: string
-    }>
+    positions: TeamPosition[]
     perm_overrides: any[]
     no_autosync: boolean
     mfa_verified: boolean
     unaccounted: boolean
     created_at: string
+}
+
+export interface TeamPosition {
+    id: string
+    name: string
+    role_id: string
+    perms: string[]
+    created_at: string
+    index: number
+    corresponding_roles: Array<{ name: string; value: string }>
+    icon: string
 }
 
 export interface TeamResponse {

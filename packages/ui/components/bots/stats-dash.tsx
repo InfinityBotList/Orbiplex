@@ -29,21 +29,21 @@ export function BotStatsDashboard({
             <StatCard
                 icon={<Bot className="w-5 h-5 text-white" />}
                 label="Total Bots"
-                value={bots}
+                value={String(bots)}
                 color="#a855f7" // Purple
                 index={0}
             />
             <StatCard
                 icon={<ShieldCheck className="w-5 h-5 text-white" />}
                 label="Approved Bots"
-                value={approved_bots}
+                value={String(approved_bots)}
                 color="#3b82f6" // Blue
                 index={2}
             />
             <StatCard
                 icon={<Star className="w-5 h-5 text-white" />}
                 label="Bot Packs"
-                value={bot_packs}
+                value={String(bot_packs)}
                 color="#f59e0b" // Amber
                 index={1}
             />
@@ -51,7 +51,7 @@ export function BotStatsDashboard({
                 <StatCard
                     icon={<Users className="w-5 h-5 text-white" />}
                     label="Total Users"
-                    value={users}
+                    value={String(users)}
                     color="#06b6d4" // Cyan
                     index={3}
                 />
@@ -59,7 +59,7 @@ export function BotStatsDashboard({
             <StatCard
                 icon={<MessageCircle className="w-5 h-5 text-white" />}
                 label="Votes this Month"
-                value={votes}
+                value={votes !== undefined ? String(votes) : '0'}
                 color="#ec4899" // Pink
                 index={4}
             />

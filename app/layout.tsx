@@ -18,7 +18,7 @@ import { Providers } from '@byteui/providers/providers'
 
 import { siteConfig } from '@byteconfigs/site.cfg'
 import { keywords } from '@byteutils/constants/keywords'
-import ModernHeader from '@/packages/ui/components/static/headerr'
+import Header from '@/packages/ui/components/static/header'
 import Footer from '@/packages/ui/components/static/footer'
 
 const geistSans = Geist({
@@ -87,7 +87,7 @@ export default function RootLayout({
                 <Providers>
                     <ThemeInitializer />
                     <div className="flex flex-col min-h-screen">
-                        <ModernHeader />
+                        <Header />
                         <main className="flex-1">{children}</main>
                         <Footer />
                     </div>
