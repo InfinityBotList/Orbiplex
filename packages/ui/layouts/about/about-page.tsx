@@ -1,20 +1,23 @@
 'use client'
 
 import React, { useEffect } from 'react'
-import { AnimatedTextCycle } from '@byteui/components/animations/text-cycle'
-import { BotSearchBar } from '@byteui/layouts/main/search'
 import { cn } from '@byteutils/functions/cn'
-
-import { motion, useScroll, useTransform, useSpring } from 'framer-motion'
+import { FeaturesSection } from '@byteui/layouts/main/features'
+import { TechStacks } from '@byteui/layouts/about/tech-stacks'
+import { TimelineComponent } from '@byteui/layouts/about/timeline'
+import { motion, useScroll } from 'framer-motion'
 import { useApiQuery } from '@byteutils/tanstack/react-query-client'
 import { ListStatistics } from '@byteutils/types/list'
 import { Bot, Server, Sparkles, User } from 'lucide-react'
+import { FaCalendarAlt, FaRocket, FaUsers } from 'react-icons/fa'
+import { TeamMember, TeamResponse } from '@byteutils/types/team'
+import { TeamSection } from '@byteui/layouts/about/team'
 
 interface HeroSectionProps {
     className?: string
 }
 
-export function HeroSection({ className }: HeroSectionProps) {
+export function AboutPage({ className }: HeroSectionProps) {
     const { scrollY } = useScroll()
 
     const [gradientPosition, setGradientPosition] = React.useState({ x: 0.5, y: 0.5 })
@@ -22,6 +25,15 @@ export function HeroSection({ className }: HeroSectionProps) {
     const { data: stats } = useApiQuery<ListStatistics>(['stats-data'], '/list/stats', {
         fetchOptions: { external: true },
         queryKey: ['stats-data']
+    })
+
+    const {
+        data: teamData,
+        isLoading: teamLoading,
+        error: teamError
+    } = useApiQuery<TeamResponse>(['team'], '/list/team', {
+        fetchOptions: { external: true },
+        queryKey: ['team-data']
     })
 
     useEffect(() => {
@@ -111,16 +123,11 @@ export function HeroSection({ className }: HeroSectionProps) {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5 }}
                     >
-                        <span>Discover the </span>
-                        <AnimatedTextCycle
-                            words={['Best Bots.', 'Best Servers.']}
-                            className="bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent"
-                            interval={4000}
-                        />
+                        <span>Welcome to Infinity List</span>
                     </motion.h1>
 
                     <motion.p
-                        className="mt-6 text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-8"
+                        className="mt-2 text-lg md:text-xl text-muted-foreground max-w-2xl"
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5, delay: 0.1 }}
@@ -130,13 +137,11 @@ export function HeroSection({ className }: HeroSectionProps) {
                     </motion.p>
 
                     <motion.div
-                        className="mt-8 flex flex-col items-center gap-6"
+                        className="mt-12 flex flex-col items-center gap-6"
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5, delay: 0.2 }}
                     >
-                        <BotSearchBar className="max-w-2xl" />
-
                         <div className="flex items-center gap-8 text-muted-foreground">
                             <div className="flex items-center gap-2">
                                 <Bot className="w-5 h-5" />
@@ -154,6 +159,59 @@ export function HeroSection({ className }: HeroSectionProps) {
                     </motion.div>
                 </div>
             </div>
+
+            {/* History Section */}
+            <section className="px-4 py-16 sm:px-6 lg:px-8 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20">
+                <div className="max-w-4xl mx-auto">
+                    <motion.div
+                        className="text-center mb-12"
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                    >
+                        <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+                            Our History
+                        </h2>
+                        <div className="bg-white dark:bg-gray-800 rounded-xl p-8 shadow-sm border border-gray-200 dark:border-gray-700">
+                            <p className="text-lg text-gray-700 dark:text-gray-300 leading-relaxed">
+                                Created and Founded on{' '}
+                                <span className="font-semibold text-blue-600 dark:text-blue-400">
+                                    September 24, 2020
+                                </span>{' '}
+                                with the hope of providing Discord Users with an{' '}
+                                <span className="font-semibold">&quot;above average&quot;</span> Bot Listing and
+                                Advertising service unlike those that currently exist and have for years.
+                            </p>
+                            <div className="mt-6 flex items-center justify-center gap-4 text-sm text-gray-600 dark:text-gray-400">
+                                <div className="flex items-center gap-2">
+                                    <FaCalendarAlt className="w-4 h-4 text-blue-600" />
+                                    <span>4+ Years Strong</span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <FaUsers className="w-4 h-4 text-green-600" />
+                                    <span>Growing Community</span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <FaRocket className="w-4 h-4 text-purple-600" />
+                                    <span>Constant Innovation</span>
+                                </div>
+                            </div>
+                        </div>
+                    </motion.div>
+                </div>
+            </section>
+
+            {/* Features Section */}
+            <FeaturesSection className="py-24 px-4 bg-muted/30 dark:bg-secondary/20" />
+
+            {/* Tech Stack Section */}
+            <TechStacks />
+
+            {/* Timeline Section */}
+            <TimelineComponent />
+
+            {/* Team section */}
+            <TeamSection teamData={teamData?.members ?? []} isLoading={teamLoading} error={!!teamError} />
 
             {/* Wave separator */}
             <div className="relative bottom-0 left-0 w-full z-0 overflow-hidden leading-[0] rotate-180">

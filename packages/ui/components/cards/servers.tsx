@@ -123,7 +123,7 @@ export function ServerCard({ server, className, variant = 'default' }: ServerCar
                     {/* Tags */}
                     {serverTags.length > 0 && !isCompact && (
                         <div className="flex flex-wrap gap-2 mt-4">
-                            {serverTags.slice(0, isFeatured ? 5 : 3).map((tag, index) => (
+                            {serverTags.slice(0, isFeatured ? 5 : 3).map((tag: string, index: number) => (
                                 <span
                                     key={index}
                                     className="px-2 py-1 text-xs rounded-full bg-secondary/20 text-secondary-foreground"

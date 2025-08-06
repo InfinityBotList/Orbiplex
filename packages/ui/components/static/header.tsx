@@ -8,7 +8,27 @@ import { AnimatedLogo } from '../logos/animated'
 import { ThemeMenu } from '../../themes/menu'
 import { cn } from '@byteutils/functions/cn'
 
-export default function ModernHeader() {
+type DropdownItem = {
+    name: string
+    href: string
+}
+
+type NavLink =
+    | {
+          name: string
+          href: string
+          icon: React.ElementType
+          hasDropdown: true
+          dropdownItems: DropdownItem[]
+      }
+    | {
+          name: string
+          href: string
+          icon: React.ElementType
+          hasDropdown: false
+      }
+
+export default function Header() {
     const [isMenuOpen, setIsMenuOpen] = useState(false)
     const [isScrolled, setIsScrolled] = useState(false)
     const [activeDropdown, setActiveDropdown] = useState<string | null>(null)
@@ -35,7 +55,7 @@ export default function ModernHeader() {
     }
 
     // Navigation links with dropdown support
-    const navLinks = [
+    const navLinks: NavLink[] = [
         {
             name: 'Bots',
             href: '/bots',
@@ -78,7 +98,7 @@ export default function ModernHeader() {
         >
             <div className="container mx-auto px-4 md:px-6">
                 <div className="flex h-16 items-center justify-between">
-                    {/* Logo - Fix window usage */}
+                    {/* Logo */}
                     <div className="flex items-center gap-2">
                         <AnimatedLogo size="md" withText={mounted ? !isScrolled || window.innerWidth >= 640 : true} />
                     </div>

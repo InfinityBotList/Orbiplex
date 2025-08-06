@@ -3,7 +3,7 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 import { useTheme } from 'next-themes'
 
-type ColorScheme = 'purple' | 'blue' | 'cyan' | 'green' | 'pink' | 'orange' | 'red' | 'indigo' | 'crimson'
+export type ColorScheme = 'purple' | 'blue' | 'cyan' | 'green' | 'pink' | 'orange' | 'red' | 'indigo' | 'crimson'
 
 type ColorContext = {
     colorScheme: ColorScheme
@@ -13,7 +13,7 @@ type ColorContext = {
 const ColorSchemeContext = createContext<ColorContext | undefined>(undefined)
 
 // Enhanced color schemes with better definitions
-const schemes = {
+export const schemes = {
     purple: {
         light: {
             'primary': 'hsl(270 91% 65%)',
@@ -198,3 +198,15 @@ export const useColorScheme = () => {
     }
     return context
 }
+
+export const colorSchemes: {
+    value: ColorScheme
+    label: string
+    description: string
+    colors: Record<string, string>
+}[] = Object.entries(schemes).map(([key, value]) => ({
+    value: key as ColorScheme,
+    label: key.charAt(0).toUpperCase() + key.slice(1),
+    description: `Use the ${key} color theme`,
+    colors: value.light
+}))

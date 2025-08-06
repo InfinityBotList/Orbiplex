@@ -3,7 +3,7 @@
 import React, { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Palette, Check } from 'lucide-react'
-import { useColorScheme, colorSchemes } from './provider'
+import { useColorScheme, colorSchemes as ColourSchemes } from './provider'
 
 export function ColorSchemeSwitcher() {
     const { colorScheme, setColorScheme } = useColorScheme()
@@ -39,13 +39,13 @@ export function ColorSchemeSwitcher() {
                             transition={{ duration: 0.15 }}
                             className="absolute top-full right-0 mt-2 p-2 z-50 bg-card border border-border rounded-lg shadow-lg w-64 grid grid-cols-2 gap-2"
                         >
-                            {colorSchemes.map(scheme => {
+                            {ColourSchemes.map(scheme => {
                                 const isSelected = colorScheme === scheme.value
                                 return (
                                     <button
                                         key={scheme.value}
                                         onClick={() => {
-                                            setColorScheme(scheme.value)
+                                            setColorScheme(scheme.value) // FIXED HERE
                                             setIsOpen(false)
                                         }}
                                         className={`relative p-3 rounded-lg border transition-all text-left ${

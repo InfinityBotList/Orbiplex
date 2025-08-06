@@ -1,10 +1,9 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from 'react'
+import type { RefObject } from 'react'
 
-import type { RefObject } from "react";
+type UseFocusCallback = (isFocused: boolean) => void
 
-type UseFocusCallback = (isFocused: boolean) => void;
-
-const description = "Tracks the focus state of a specified element.";
+const description = 'Tracks the focus state of a specified element.'
 
 /**
  * Tracks the focus state of a specified element.
@@ -17,45 +16,34 @@ const description = "Tracks the focus state of a specified element.";
  * @returns A tuple containing the ref and a boolean indicating whether the
  * element is currently focused.
  */
-export function useFocus<T extends HTMLElement>(
-  callback?: UseFocusCallback,
-): [RefObject<T>, boolean] {
-  const [isFocused, setIsFocused] = useState(false);
-  const ref = useRef<T>(null);
+export function useFocus<T extends HTMLElement>(callback?: UseFocusCallback): [RefObject<T | null>, boolean] {
+    const [isFocused, setIsFocused] = useState(false)
+    const ref = useRef<T | null>(null)
 
-  useEffect(() => {
-    /**
-     * A function to run whenever the element gains focus.
-     * @param {boolean} isFocused - Whether the element is currently focused.
-     * @param {UseFocusCallback} [callback] - The callback function provided to useFocus.
-     */
-    const handleFocus = () => {
-      setIsFocused(true);
-      callback?.(true);
-    };
-    /**
-     * A function to run whenever the element loses focus.
-     * @param {boolean} isFocused - Whether the element is currently focused.
-     * @param {UseFocusCallback} [callback] - The callback function provided to useFocus.
-     */
-    const handleBlur = () => {
-      setIsFocused(false);
-      callback?.(false);
-    };
+    useEffect(() => {
+        const handleFocus = () => {
+            setIsFocused(true)
+            callback?.(true)
+        }
 
-    const node = ref.current;
-    if (node) {
-      node.addEventListener("focus", handleFocus);
-      node.addEventListener("blur", handleBlur);
-    }
+        const handleBlur = () => {
+            setIsFocused(false)
+            callback?.(false)
+        }
 
-    return () => {
-      if (node) {
-        node.removeEventListener("focus", handleFocus);
-        node.removeEventListener("blur", handleBlur);
-      }
-    };
-  }, [callback]);
+        const node = ref.current
+        if (node) {
+            node.addEventListener('focus', handleFocus)
+            node.addEventListener('blur', handleBlur)
+        }
 
-  return [ref, isFocused];
+        return () => {
+            if (node) {
+                node.removeEventListener('focus', handleFocus)
+                node.removeEventListener('blur', handleBlur)
+            }
+        }
+    }, [callback])
+
+    return [ref, isFocused]
 }

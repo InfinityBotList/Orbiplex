@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from 'react'
 
-const description = "Returns a throttled version of the provided function.";
+const description = 'Returns a throttled version of the provided function.'
 
 /**
  * Type for throttle options
@@ -11,10 +11,10 @@ const description = "Returns a throttled version of the provided function.";
  */
 
 type ThrottleOptions = {
-  wait?: number;
-  leading?: boolean;
-  trailing?: boolean;
-};
+    wait?: number
+    leading?: boolean
+    trailing?: boolean
+}
 
 /**
  * Returns a throttled version of the provided function.
@@ -29,53 +29,53 @@ type ThrottleOptions = {
  *
  * @returns {(...args: Parameters<T>) => void} A throttled version of the provided function
  */
-export function useThrottle<T extends (...args: unknown[]) => void>(
-  fn: T,
-  options: ThrottleOptions = {},
+export function useThrottle<T extends (...args: any[]) => any>(
+    fn: T,
+    options: ThrottleOptions = {}
 ): (...args: Parameters<T>) => void {
-  const { wait = 300, leading = true, trailing = true } = options;
+    const { wait = 300, leading = true, trailing = true } = options
 
-  const timeoutRef = useRef<number | null>(null);
-  const lastRunRef = useRef<number>(0);
-  const lastArgsRef = useRef<Parameters<T> | null>(null);
+    const timeoutRef = useRef<number | null>(null)
+    const lastRunRef = useRef<number>(0)
+    const lastArgsRef = useRef<Parameters<T> | null>(null)
 
-  useEffect(() => {
-    return () => {
-      if (timeoutRef.current !== null) {
-        window.clearTimeout(timeoutRef.current);
-      }
-    };
-  }, []);
-
-  return useCallback(
-    (...args: Parameters<T>) => {
-      const now = Date.now();
-      const elapsed = now - lastRunRef.current;
-
-      lastArgsRef.current = args;
-
-      const execute = () => {
-        if (lastArgsRef.current) {
-          fn(...lastArgsRef.current);
+    useEffect(() => {
+        return () => {
+            if (timeoutRef.current !== null) {
+                window.clearTimeout(timeoutRef.current)
+            }
         }
-        lastRunRef.current = Date.now();
-      };
+    }, [])
 
-      if (timeoutRef.current !== null) {
-        window.clearTimeout(timeoutRef.current);
-        timeoutRef.current = null;
-      }
+    return useCallback(
+        (...args: Parameters<T>) => {
+            const now = Date.now()
+            const elapsed = now - lastRunRef.current
 
-      if (elapsed > wait) {
-        if (leading) {
-          execute();
-        } else if (trailing) {
-          timeoutRef.current = window.setTimeout(execute, wait);
-        }
-      } else if (trailing) {
-        timeoutRef.current = window.setTimeout(execute, wait - elapsed);
-      }
-    },
-    [fn, wait, leading, trailing],
-  );
+            lastArgsRef.current = args
+
+            const execute = () => {
+                if (lastArgsRef.current) {
+                    fn(...lastArgsRef.current)
+                }
+                lastRunRef.current = Date.now()
+            }
+
+            if (timeoutRef.current !== null) {
+                window.clearTimeout(timeoutRef.current)
+                timeoutRef.current = null
+            }
+
+            if (elapsed > wait) {
+                if (leading) {
+                    execute()
+                } else if (trailing) {
+                    timeoutRef.current = window.setTimeout(execute, wait)
+                }
+            } else if (trailing) {
+                timeoutRef.current = window.setTimeout(execute, wait - elapsed)
+            }
+        },
+        [fn, wait, leading, trailing]
+    )
 }

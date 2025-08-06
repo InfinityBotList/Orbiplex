@@ -13,19 +13,13 @@ import '@byteui/styles/globals.css'
 import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 
-import { ThemeProvider } from '@byteui/themes/provider'
 import { ThemeInitializer } from '@byteui/themes/initializer'
-import { ColorSchemeProvider } from '@byteui/themes/color-schemes/provider'
 import { Providers } from '@byteui/providers/providers'
 
 import { siteConfig } from '@byteconfigs/site.cfg'
 import { keywords } from '@byteutils/constants/keywords'
-import ModernHeader from '@/packages/ui/components/static/headerr'
+import Header from '@/packages/ui/components/static/header'
 import Footer from '@/packages/ui/components/static/footer'
-
-import { QueryClientProvider, QueryClient } from '@tanstack/react-query'
-import { ReactQueryDevTools } from '@tanstack/react-query-devtools'
-import { queryClient } from '@/packages/utils/tanstack/react-query-client'
 
 const geistSans = Geist({
     variable: '--font-geist-sans',
@@ -93,7 +87,7 @@ export default function RootLayout({
                 <Providers>
                     <ThemeInitializer />
                     <div className="flex flex-col min-h-screen">
-                        <ModernHeader />
+                        <Header />
                         <main className="flex-1">{children}</main>
                         <Footer />
                     </div>

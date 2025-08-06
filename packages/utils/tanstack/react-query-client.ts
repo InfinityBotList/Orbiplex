@@ -11,7 +11,7 @@ export const queryClient = new QueryClient({
     defaultOptions: {
         queries: {
             // No caching at the client level
-            cacheTime: 0,
+            gcTime: 0,
             staleTime: 0,
             refetchOnWindowFocus: false,
             refetchOnReconnect: false,

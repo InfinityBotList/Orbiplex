@@ -25,21 +25,23 @@ bun run build
 ## Pull Request Guidelines
 
 1. **Branch Naming**
-   - `feature/*` for new features
-   - `fix/*` for bug fixes
-   - `docs/*` for documentation changes
-   - `refactor/*` for code refactoring
+
+    - `feature/*` for new features
+    - `fix/*` for bug fixes
+    - `docs/*` for documentation changes
+    - `refactor/*` for code refactoring
 
 2. **Commit Messages**
-   - Use clear, descriptive commit messages
-   - Start with a verb in present tense (e.g., "Add feature" not "Added feature")
-   - Reference issues if applicable
+
+    - Use clear, descriptive commit messages
+    - Start with a verb in present tense (e.g., "Add feature" not "Added feature")
+    - Reference issues if applicable
 
 3. **Code Style**
-   - Follow the existing code style
-   - Use TypeScript for all new code
-   - Include appropriate documentation
-   - Ensure all tests pass
+    - Follow the existing code style
+    - Use TypeScript for all new code
+    - Include appropriate documentation
+    - Ensure all tests pass
 
 ## Testing
 
@@ -50,6 +52,7 @@ bun run build
 ## Documentation
 
 When adding new features, please update:
+
 - Code comments
 - README.md (if applicable)
 - API documentation
@@ -60,16 +63,18 @@ When adding new features, please update:
 When contributing platform-specific features:
 
 1. **Discord Integration**
-   - Follow Discord API best practices
-   - Test with both bot and OAuth2 flows
+
+    - Follow Discord API best practices
+    - Test with both bot and OAuth2 flows
 
 2. **Revolt Integration**
-   - Ensure compatibility with Revolt's API
-   - Test with development instances
+
+    - Ensure compatibility with Revolt's API
+    - Test with development instances
 
 3. **Guilded Integration**
-   - Follow Guilded's development guidelines
-   - Test with bot functionality
+    - Follow Guilded's development guidelines
+    - Test with bot functionality
 
 ## Need Help?
 

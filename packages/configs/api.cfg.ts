@@ -9,9 +9,9 @@
 type Environment = 'development' | 'production' | 'test'
 
 interface ApiConfig {
-    port?: number; // The services port (not required)
-    base: string; // The services base url (eg. https://api.infinitybots.gg)
-    docs: string; // The services docs url (eg. https://api.infinitybots.gg/docs)
+    port?: number // The services port (not required)
+    base: string // The services base url (eg. https://api.infinitybots.gg)
+    docs: string // The services docs url (eg. https://api.infinitybots.gg/docs)
 }
 
 type EnvironmentConfig = {
@@ -24,6 +24,10 @@ export const apiConfig: EnvironmentConfig = {
         docs: 'https://spider.infinitybots.gg/docs'
     },
     development: {
+        base: 'https://spider-staging.infinitybots.gg',
+        docs: 'https://spider-staging.infinitybots.gg/docs'
+    },
+    test: {
         base: 'https://spider-staging.infinitybots.gg',
         docs: 'https://spider-staging.infinitybots.gg/docs'
     }
