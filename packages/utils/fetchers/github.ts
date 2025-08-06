@@ -1,4 +1,4 @@
-import axios, { AxiosInstance, AxiosRequestConfig, AxiosError } from 'axios'
+import { useQuery, useMutation, UseQueryOptions, UseMutationOptions, QueryKey } from '@tanstack/react-query'
 
 interface GitHubFetcherOptions {
     baseURL?: string
@@ -13,177 +13,173 @@ interface GitHubResponse<T> {
     status: number
 }
 
-class GitHubFetcher {
-    private client: AxiosInstance
-    private rateLimitRemaining: number = 60
-    private rateLimitReset: number = 0
-    private authToken: string | undefined
+// Rate limit state (module-level, not per-request)
+let rateLimitRemaining = 60
+let rateLimitReset = 0
 
-    constructor(options: GitHubFetcherOptions = {}) {
-        const {
-            baseURL = 'https://api.github.com',
-            timeout = 10000,
-            userAgent = 'InfinityBotList',
-            authToken = process.env.GITHUB_TOKEN
-        } = options
+function updateRateLimits(headers: Record<string, string>) {
+    const remaining = headers['x-ratelimit-remaining']
+    const reset = headers['x-ratelimit-reset']
+    if (remaining) rateLimitRemaining = parseInt(remaining, 10)
+    if (reset) rateLimitReset = parseInt(reset, 10)
+}
 
-        this.authToken = authToken
-
-        this.client = axios.create({
-            baseURL,
-            timeout,
-            headers: {
-                'Accept': 'application/vnd.github.v3+json',
-                'User-Agent': userAgent,
-                ...(this.authToken ? { Authorization: `Bearer ${this.authToken}` } : {})
-            }
-        })
-
-        // Add response interceptor to track rate limits
-        this.client.interceptors.response.use(
-            response => {
-                this.updateRateLimits(response.headers)
-                return response
-            },
-            error => {
-                if (error.response) {
-                    this.updateRateLimits(error.response.headers)
-                }
-                return Promise.reject(error)
-            }
-        )
-    }
-
-    private updateRateLimits(headers: any) {
-        const remaining = headers['x-ratelimit-remaining']
-        const reset = headers['x-ratelimit-reset']
-
-        if (remaining) {
-            this.rateLimitRemaining = parseInt(remaining, 10)
-        }
-        if (reset) {
-            this.rateLimitReset = parseInt(reset, 10)
-        }
-    }
-
-    /**
-     * Get the current rate limit information
-     */
-    getRateLimitInfo() {
-        return {
-            remaining: this.rateLimitRemaining,
-            reset: this.rateLimitReset,
-            resetTime: new Date(this.rateLimitReset * 1000)
-        }
-    }
-
-    /**
-     * Make a GET request to the GitHub API
-     */
-    async get<T>(endpoint: string, config?: AxiosRequestConfig): Promise<GitHubResponse<T>> {
-        try {
-            if (!this.authToken) {
-                throw new Error('GitHub token not configured. Please set GITHUB_TOKEN environment variable.')
-            }
-
-            const response = await this.client.get<T>(endpoint, {
-                ...config,
-                headers: {
-                    ...config?.headers,
-                    Authorization: `Bearer ${this.authToken}`
-                }
-            })
-
-            return {
-                data: response.data,
-                headers: response.headers as Record<string, string>,
-                status: response.status
-            }
-        } catch (error) {
-            if (axios.isAxiosError(error)) {
-                const axiosError = error as AxiosError<{ message: string }>
-                const status = axiosError.response?.status
-                const message = axiosError.response?.data?.message || axiosError.message
-
-                switch (status) {
-                    case 401:
-                    case 403:
-                        throw new Error(
-                            `GitHub API Authentication Error: ${message}. Please check your GitHub token configuration.`
-                        )
-                    case 404:
-                        throw new Error(`GitHub API Resource Not Found: ${message}`)
-                    case 429:
-                        const resetTime = axiosError.response?.headers['x-ratelimit-reset']
-                        const retryAfter = resetTime ? new Date(parseInt(resetTime) * 1000) : 'unknown'
-                        throw new Error(`GitHub API Rate Limit Exceeded. Please try again after ${retryAfter}`)
-                    default:
-                        throw new Error(`GitHub API Error (${status}): ${message}`)
-                }
-            }
-            throw error
-        }
-    }
-
-    /**
-     * Make a POST request to the GitHub API
-     */
-    async post<T>(endpoint: string, data?: any, config?: AxiosRequestConfig): Promise<GitHubResponse<T>> {
-        try {
-            const response = await this.client.post<T>(endpoint, data, config)
-            return {
-                data: response.data,
-                headers: response.headers as Record<string, string>,
-                status: response.status
-            }
-        } catch (error) {
-            if (axios.isAxiosError(error)) {
-                throw new Error(`GitHub API Error: ${error.message} (${error.response?.status})`)
-            }
-            throw error
-        }
-    }
-
-    /**
-     * Make a PUT request to the GitHub API
-     */
-    async put<T>(endpoint: string, data?: any, config?: AxiosRequestConfig): Promise<GitHubResponse<T>> {
-        try {
-            const response = await this.client.put<T>(endpoint, data, config)
-            return {
-                data: response.data,
-                headers: response.headers as Record<string, string>,
-                status: response.status
-            }
-        } catch (error) {
-            if (axios.isAxiosError(error)) {
-                throw new Error(`GitHub API Error: ${error.message} (${error.response?.status})`)
-            }
-            throw error
-        }
-    }
-
-    /**
-     * Make a DELETE request to the GitHub API
-     */
-    async delete<T>(endpoint: string, config?: AxiosRequestConfig): Promise<GitHubResponse<T>> {
-        try {
-            const response = await this.client.delete<T>(endpoint, config)
-            return {
-                data: response.data,
-                headers: response.headers as Record<string, string>,
-                status: response.status
-            }
-        } catch (error) {
-            if (axios.isAxiosError(error)) {
-                throw new Error(`GitHub API Error: ${error.message} (${error.response?.status})`)
-            }
-            throw error
-        }
+export function getRateLimitInfo() {
+    return {
+        remaining: rateLimitRemaining,
+        reset: rateLimitReset,
+        resetTime: new Date(rateLimitReset * 1000)
     }
 }
 
-// Create a default instance
+function getHeaders(options?: GitHubFetcherOptions) {
+    const headers: Record<string, string> = {
+        'Accept': 'application/vnd.github.v3+json',
+        'User-Agent': options?.userAgent || 'InfinityBotList'
+    }
+    const token = process.env.GITHUB_TOKEN
+    if (token) headers['Authorization'] = `Bearer ${token}`
+    return headers
+}
+
+async function githubFetch<T>(
+    method: 'GET' | 'POST' | 'PUT' | 'DELETE',
+    endpoint: string,
+    data?: any,
+    options?: GitHubFetcherOptions & { fetchOptions?: RequestInit }
+): Promise<GitHubResponse<T>> {
+    const baseURL = options?.baseURL || 'https://api.github.com'
+    const url = endpoint.startsWith('http') ? endpoint : `${baseURL}${endpoint}`
+    const headers = {
+        ...getHeaders(options),
+        ...(options?.fetchOptions?.headers || {})
+    }
+    const fetchOptions: RequestInit = {
+        method,
+        headers,
+        ...options?.fetchOptions
+    }
+    if (data && method !== 'GET') {
+        fetchOptions.body = JSON.stringify(data)
+        // Ensure headers is a Record<string, string>
+        if (typeof headers === 'object' && headers !== null && !Array.isArray(headers)) {
+            ;(headers as Record<string, string>)['Content-Type'] = 'application/json'
+        }
+    }
+    const res = await fetch(url, fetchOptions)
+    const resHeaders: Record<string, string> = {}
+    res.headers.forEach((v, k) => {
+        resHeaders[k] = v
+    })
+    updateRateLimits(resHeaders)
+    const contentType = res.headers.get('content-type') || ''
+    let responseData: any = undefined
+    if (contentType.includes('application/json')) {
+        responseData = await res.json()
+    } else {
+        responseData = await res.text()
+    }
+    if (!res.ok) {
+        const status = res.status
+        const message = responseData?.message || res.statusText
+        switch (status) {
+            case 401:
+            case 403:
+                throw new Error(
+                    `GitHub API Authentication Error: ${message}. Please check your GitHub token configuration.`
+                )
+            case 404:
+                throw new Error(`GitHub API Resource Not Found: ${message}`)
+            case 429:
+                const resetTime = res.headers.get('x-ratelimit-reset')
+                const retryAfter = resetTime ? new Date(parseInt(resetTime) * 1000) : 'unknown'
+                throw new Error(`GitHub API Rate Limit Exceeded. Please try again after ${retryAfter}`)
+            default:
+                throw new Error(`GitHub API Error (${status}): ${message}`)
+        }
+    }
+    return {
+        data: responseData,
+        headers: resHeaders,
+        status: res.status
+    }
+}
+
+// --- React Query hooks ---
+
+export function useGitHubQuery<T = unknown, E = unknown>(
+    key: QueryKey,
+    endpoint: string,
+    options?: UseQueryOptions<GitHubResponse<T>, E> & { fetcherOptions?: GitHubFetcherOptions }
+) {
+    return useQuery<GitHubResponse<T>, E>({
+        queryKey: key,
+        queryFn: () => githubFetch<T>('GET', endpoint, undefined, options?.fetcherOptions),
+        ...options
+    })
+}
+
+export function useGitHubMutation<T = unknown, V = any, E = unknown>(
+    method: 'POST' | 'PUT' | 'DELETE',
+    endpoint: string,
+    options?: UseMutationOptions<GitHubResponse<T>, E, V> & { fetcherOptions?: GitHubFetcherOptions }
+) {
+    return useMutation<GitHubResponse<T>, E, V>({
+        mutationFn: (variables: V) => githubFetch<T>(method, endpoint, variables, options?.fetcherOptions),
+        ...options
+    })
+}
+
+// Convenience hooks
+export function useGitHubPost<T = unknown, V = any, E = unknown>(
+    endpoint: string,
+    options?: UseMutationOptions<GitHubResponse<T>, E, V> & { fetcherOptions?: GitHubFetcherOptions }
+) {
+    return useGitHubMutation<T, V, E>('POST', endpoint, options)
+}
+
+export function useGitHubPut<T = unknown, V = any, E = unknown>(
+    endpoint: string,
+    options?: UseMutationOptions<GitHubResponse<T>, E, V> & { fetcherOptions?: GitHubFetcherOptions }
+) {
+    return useGitHubMutation<T, V, E>('PUT', endpoint, options)
+}
+
+export function useGitHubDelete<T = unknown, V = any, E = unknown>(
+    endpoint: string,
+    options?: UseMutationOptions<GitHubResponse<T>, E, V> & { fetcherOptions?: GitHubFetcherOptions }
+) {
+    return useGitHubMutation<T, V, E>('DELETE', endpoint, options)
+}
+
+// --- Class-based API ---
+class GitHubFetcher {
+    async get<T = unknown>(endpoint: string, options?: GitHubFetcherOptions & { fetchOptions?: RequestInit }) {
+        return githubFetch<T>('GET', endpoint, undefined, options)
+    }
+    async post<T = unknown, V = any>(
+        endpoint: string,
+        data?: V,
+        options?: GitHubFetcherOptions & { fetchOptions?: RequestInit }
+    ) {
+        return githubFetch<T>('POST', endpoint, data, options)
+    }
+    async put<T = unknown, V = any>(
+        endpoint: string,
+        data?: V,
+        options?: GitHubFetcherOptions & { fetchOptions?: RequestInit }
+    ) {
+        return githubFetch<T>('PUT', endpoint, data, options)
+    }
+    async delete<T = unknown, V = any>(
+        endpoint: string,
+        data?: V,
+        options?: GitHubFetcherOptions & { fetchOptions?: RequestInit }
+    ) {
+        return githubFetch<T>('DELETE', endpoint, data, options)
+    }
+}
+
 const githubFetcher = new GitHubFetcher()
 
 export { GitHubFetcher, githubFetcher }
